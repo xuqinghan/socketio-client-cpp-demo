@@ -1,59 +1,65 @@
 ﻿// socketio-client-cpp-demo.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
-#include <mutex>
-#include <condition_variable>
+//#include <mutex>
+//#include <condition_variable>
+
+//#define UNICODE 1
+//#define _UNICODE 1
+#include <string>
+#include <Windows.h>
 #include <iostream>
 #include <sio_client.h>
 #include <sio_message.h>
 #include <sio_socket.h>
-#include <vector>
+//#include <vector>
+using namespace std;
 
 
 using namespace sio;
-using namespace std;
-
-std::mutex _lock;
-std::condition_variable_any _cond;
-bool connect_finish = false;
-
-void OnMessage(sio::event&)
-{
-    std::cout << "OnMessage!\n";
-}
 
 
-
-class connection_listener
-{
-    sio::client& handler;
-
-public:
-
-    connection_listener(sio::client& h) :
-        handler(h)
-    {
-    }
+//std::mutex _lock;
+//std::condition_variable_any _cond;
+//bool connect_finish = false;
+//
+//void OnMessage(sio::event&)
+//{
+//    std::cout << "OnMessage!\n";
+//}
 
 
-    void on_connected()
-    {
-        _lock.lock();
-        _cond.notify_all();
-        connect_finish = true;
-        _lock.unlock();
-    }
-    void on_close(client::close_reason const& reason)
-    {
-        std::cout << "sio closed " << std::endl;
-        exit(0);
-    }
 
-    void on_fail()
-    {
-        std::cout << "sio failed " << std::endl;
-        exit(0);
-    }
-};
+//class connection_listener
+//{
+//    sio::client& handler;
+//
+//public:
+//
+//    connection_listener(sio::client& h) :
+//        handler(h)
+//    {
+//    }
+//
+//
+//    void on_connected()
+//    {
+//        _lock.lock();
+//        _cond.notify_all();
+//        connect_finish = true;
+//        _lock.unlock();
+//    }
+//    void on_close(client::close_reason const& reason)
+//    {
+//        std::cout << "sio closed " << std::endl;
+//        exit(0);
+//    }
+//
+//    void on_fail()
+//    {
+//        std::cout << "sio failed " << std::endl;
+//        exit(0);
+//    }
+//};
 
 
 int main()
@@ -76,14 +82,19 @@ int main()
     //_lock.unlock();
     current_socket = h.socket();
     //测试发送消息
+
+    //空消息，不带参数
     current_socket->emit("message_empty");
-    string data_str = "哒哒哒哒哒哒";
-
-    //string_message e = sio::string_message(data_str);
-    message::list li("sports");
-    li.push(string_message::create("economics"));
-
-    current_socket->emit("message_two", li);
+    //字符串消息
+    std::string data_str = "哈哈";
+    message::list payload_str1("dsdf"); //ok 直接字面值没错
+    message::list payload_str2 = message::list();
+    payload_str2.push(string_message::create(data_str));
+    current_socket->emit("message_str", payload_str2);
+    //2个以上参数
+    message::list payload_list("sports");
+    payload_list.push(string_message::create("economics"));
+    current_socket->emit("message_two", payload_list);
     //current_socket->on("connect", &OnMessage);
     while (true) {
 

@@ -1,5 +1,8 @@
-✔ emit empty @done(21-12-03 12:58)
-✔ emit list @done(21-12-03 12:58)
-☐ emit number
-☐ emit string
-☐ emit object
+64位版:
+    ✔ emit empty @done(21-12-03 12:58)
+    ✔ emit list @done(21-12-03 12:58)
+    ☐ emit number
+    ☐ emit string  string 创建中文字符有问题！
+    ☐ emit object
+
+32位版:
